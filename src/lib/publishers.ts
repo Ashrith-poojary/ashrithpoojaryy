@@ -1,7 +1,6 @@
 /**
  * Publisher data-access helpers for the Tailspin Toys Crowd Funding platform.
- * Provides functions to retrieve publisher identifiers and names from the
- * database.
+ * Provides functions to retrieve publisher information from the database.
  */
 import { asc } from 'drizzle-orm';
 import type { Database } from './db';
