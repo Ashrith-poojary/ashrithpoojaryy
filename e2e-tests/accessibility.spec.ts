@@ -144,6 +144,20 @@ test.describe('Accessibility Tests', () => {
       // Check if there's a visible outline or box-shadow (focus ring)
       return (outline !== 'none' && outlineWidth !== '0px') || boxShadow !== 'none';
     });
+
+    test('high contrast toggle is keyboard accessible and persistent', async ({ page }) => {
+      await page.goto('/');
+      const toggle = page.getByTestId('contrast-toggle');
+
+      await toggle.focus();
+      await expect(toggle).toBeFocused();
+      await page.keyboard.press('Enter');
+
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.locator('html')).toHaveClass(/high-contrast/);
+      await page.reload();
+      await expect(page.getByTestId('contrast-toggle')).toHaveAttribute('aria-pressed', 'true');
+    });
     
     expect(hasVisibleFocus).toBeTruthy();
   });
