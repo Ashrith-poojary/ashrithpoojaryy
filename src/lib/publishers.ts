@@ -8,10 +8,10 @@ import { publishers } from '../../db/schema';
 import type { Publisher } from '../types/game';
 
 /**
- * Returns a list of all publishers with each publisher's ID and name.
+ * Returns a list of all publishers with their id and name.
  *
  * @param db - The Drizzle database client.
- * @returns A promise that resolves to publisher objects containing an ID and name.
+ * @returns A promise that resolves to an array of publisher objects.
  */
 export async function getAllPublishers(db: Database): Promise<Publisher[]> {
     return db
