@@ -47,8 +47,53 @@ test.describe('Home Page', () => {
     await page.getByLabel('Publisher').selectOption({ label: 'CodeForge Studios' });
     await page.getByTestId('clear-filters').click();
 
-    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(21);
+    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(6);
     await expect(page).toHaveURL('/');
     await expect(page.getByTestId('filter-results-count')).toHaveText('21 games shown');
+  });
+
+  test('paginates the game list with previous and next controls', async ({ page }) => {
+    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(6);
+    await expect(page.getByTestId('page-indicator')).toHaveText('Page 1 of 4');
+    await expect(page.getByTestId('previous-page')).toBeDisabled();
+    await expect(page.getByTestId('next-page')).toBeEnabled();
+
+    await page.getByTestId('next-page').click();
+
+    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(6);
+    await expect(page.getByTestId('page-indicator')).toHaveText('Page 2 of 4');
+    await expect(page).toHaveURL(/page=2/);
+    await expect(page.getByTestId('previous-page')).toBeEnabled();
+
+    await page.getByTestId('previous-page').click();
+
+    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(6);
+    await expect(page.getByTestId('page-indicator')).toHaveText('Page 1 of 4');
+    await expect(page).toHaveURL('/');
+  });
+
+  test('resets pagination when a filter changes', async ({ page }) => {
+    await page.getByTestId('next-page').click();
+    await expect(page.getByTestId('page-indicator')).toHaveText('Page 2 of 4');
+
+    await page.getByLabel('Categories').selectOption({ label: 'Strategy' });
+
+    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(4);
+    await expect(page.getByTestId('page-indicator')).toHaveText('Page 1 of 1');
+    await expect(page).toHaveURL(/category=\d+$/);
+  });
+
+  test('persists high contrast mode across reloads', async ({ page }) => {
+    const contrastToggle = page.getByTestId('contrast-toggle');
+
+    await expect(contrastToggle).toHaveAttribute('aria-pressed', 'false');
+    await contrastToggle.click();
+    await expect(contrastToggle).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('html')).toHaveClass(/high-contrast/);
+
+    await page.reload();
+
+    await expect(page.getByTestId('contrast-toggle')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('html')).toHaveClass(/high-contrast/);
   });
 });

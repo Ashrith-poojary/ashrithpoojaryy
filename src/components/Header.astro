@@ -18,6 +18,16 @@ import Menu from '../assets/icons/menu.svg';
       </div>
       <div class="text-xl font-bold"><a href="/" class="hover:underline">Tailspin Toys</a></div>
     </div>
+    <button
+      id="contrast-toggle"
+      type="button"
+      class="rounded px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-500"
+      aria-label="Enable high contrast mode"
+      aria-pressed="false"
+      data-testid="contrast-toggle"
+    >
+      High contrast
+    </button>
   </div>
 </header>
 
@@ -25,6 +35,22 @@ import Menu from '../assets/icons/menu.svg';
   // Toggle menu visibility when hamburger is clicked
   const menuToggle = document.getElementById('menu-toggle');
   const menu = document.getElementById('menu');
+  const contrastToggle = document.getElementById('contrast-toggle');
+
+  const setHighContrast = (enabled: boolean) => {
+    document.documentElement.classList.toggle('high-contrast', enabled);
+    contrastToggle?.setAttribute('aria-pressed', String(enabled));
+    contrastToggle?.setAttribute('aria-label', `${enabled ? 'Disable' : 'Enable'} high contrast mode`);
+    if (contrastToggle) contrastToggle.textContent = enabled ? 'Standard contrast' : 'High contrast';
+    localStorage.setItem('tailspin-high-contrast', String(enabled));
+  };
+
+  if (contrastToggle) {
+    setHighContrast(localStorage.getItem('tailspin-high-contrast') === 'true');
+    contrastToggle.addEventListener('click', () => {
+      setHighContrast(!document.documentElement.classList.contains('high-contrast'));
+    });
+  }
   
   if (menuToggle && menu) {
     menuToggle.addEventListener('click', () => {
