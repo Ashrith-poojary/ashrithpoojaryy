@@ -18,6 +18,22 @@ The app's data lives in a local SQLite database accessed through **Drizzle ORM**
 - `src/lib/db.ts` — `createDatabase(url)` / `getDatabase()` build the Drizzle client from `DATABASE_URL` (defaults to the local `tailspin.db` file).
 - `src/lib/games.ts` — typed, **injectable-db** data-access helpers used by pages and tests.
 
+## Documentation and TypeScript Style
+
+- Comments should explain intent, constraints, or non-obvious decisions; do not
+  restate what the following code already says.
+- Every exported function in `db/` and `src/lib/` must have a TSDoc comment
+  describing its purpose, parameters, and return value.
+- Keep the injectable `db` parameter explicit in both the function signature
+  and its TSDoc so the helper's testability is clear.
+- Use explicit parameter and return types for exported and data-layer
+  functions. Prefer inferred local types when the surrounding expression makes
+  the type unambiguous.
+- Follow the repository's ESLint rules for TypeScript formatting and avoid
+  disabling them without a documented reason.
+- Keep comments current with the implementation; update or remove comments in
+  the same change when behavior changes.
+
 ## Schema Conventions
 
 - Use `sqliteTable` with explicit column names (`text`, `integer`, `real`).
